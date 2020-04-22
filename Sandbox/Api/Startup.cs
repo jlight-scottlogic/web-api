@@ -5,6 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Api.Middleware;
+using Microsoft.AspNetCore.Authentication;
+using Api.Security;
+using Api.Security.Interfaces;
 
 namespace Api
 {
@@ -19,7 +22,12 @@ namespace Api
                 options.Filters.Add<InMemoryContextFilter>();
             });
 
+            services.AddAuthentication("BasicAuthentication")
+                .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
+
             services.AddDbContext<SandboxContext>(opt => opt.UseInMemoryDatabase("Sandbox"));
+
+            services.AddScoped<IUserAuthenticationService, UserAuthenticationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -31,6 +39,9 @@ namespace Api
             }
 
             app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
