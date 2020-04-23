@@ -32,7 +32,14 @@ namespace Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Product>> Get(Guid id)
         {
-            return await context.Products.FindAsync(id);
+            var product = await context.Products.FindAsync(id);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
+            return product;
         }
 
         // POST products
@@ -49,22 +56,38 @@ namespace Api.Controllers
 
         // PUT products/5
         [HttpPut("{id}")]
-        public async Task Put(Guid id, [FromBody]string value)
+        public async Task<IActionResult> Put(Guid id, [FromBody]string value)
         {
             var product = await context.Products.FindAsync(id);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
             product.Name = value;
 
             await context.SaveChangesAsync();
+
+            return Ok();
         }
 
         // DELETE products/5
         [HttpDelete("{id}")]
-        public async Task Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             var product = await context.Products.FindAsync(id);
+
+            if (product == null)
+            {
+                return NotFound();
+            }
+
             context.Products.Remove(product);
 
             await context.SaveChangesAsync();
+
+            return Ok();
         }
     }
 }
