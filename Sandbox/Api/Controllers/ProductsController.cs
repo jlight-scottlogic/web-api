@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Api.Data;
 using Api.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,15 +22,27 @@ namespace Api.Controllers
             this.context = context;
         }
 
-        // GET: products
+        /// <summary>
+        /// Gets list of all existing products
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Product>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<IEnumerable<Product>>> Get()
         {
             return await context.Products.ToListAsync();
         }
 
-        // GET products/5
+        /// <summary>
+        /// Gets a product with the corresponding id
+        /// </summary>
+        /// <param name="id">The id of the product</param>
+        /// <returns>The product</returns>
         [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Product))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Product>> Get(Guid id)
         {
             var product = await context.Products.FindAsync(id);
@@ -42,38 +55,60 @@ namespace Api.Controllers
             return product;
         }
 
-        // POST products
+        /// <summary>
+        /// Creates a new product with an auto-generated unique id
+        /// </summary>
+        /// <param name="product">The product to create</param>
+        /// <returns>The generated id</returns>
         [HttpPost]
-        public async Task<ActionResult<Guid>> Post([FromBody]string value)
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<ActionResult<Guid>> Post(Product product)
         {
             var id = Guid.NewGuid();
-            context.Products.Add(new Product { Id = id, Name = value });
+            product.Id = id;
+            context.Products.Add(product);
 
             await context.SaveChangesAsync();
 
             return id;
         }
 
-        // PUT products/5
+        /// <summary>
+        /// Updates the product with the given id with the values specified
+        /// </summary>
+        /// <param name="id">Product id to edit</param>
+        /// <param name="product">New values</param>
+        /// <returns></returns>
         [HttpPut("{id}")]
-        public async Task<IActionResult> Put(Guid id, [FromBody]string value)
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Put(Guid id, Product product)
         {
-            var product = await context.Products.FindAsync(id);
+            var existing = await context.Products.FindAsync(id);
 
             if (product == null)
             {
                 return NotFound();
             }
 
-            product.Name = value;
+            existing.Name = product.Name;
 
             await context.SaveChangesAsync();
 
             return Ok();
         }
 
-        // DELETE products/5
+        /// <summary>
+        /// Removes the product with the given id
+        /// </summary>
+        /// <param name="id">Product id to remove</param>
+        /// <returns></returns>
         [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(Guid id)
         {
             var product = await context.Products.FindAsync(id);

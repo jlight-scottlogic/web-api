@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 using Api.Data;
 using Api.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace Api.Controllers
 {
@@ -22,14 +22,27 @@ namespace Api.Controllers
             this.context = context;
         }
 
-        // GET: users
+
+        /// <summary>
+        /// Gets list of all existing users
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<User>))]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<IEnumerable<User>>> Get()
         {
             return await context.Users.ToListAsync();
         }
 
+
+        /// <summary>
+        /// Gets current user details from HttpContext
+        /// </summary>
+        /// <returns>The product</returns>
         [HttpGet("current")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public IActionResult GetCurrent()
         {
             return Ok(new
