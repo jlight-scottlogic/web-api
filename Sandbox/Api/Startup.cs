@@ -3,11 +3,13 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using Api.Middleware;
 using Microsoft.AspNetCore.Authentication;
 using Api.Security;
 using Api.Security.Interfaces;
+using NLog.Web;
 
 namespace Api
 {
