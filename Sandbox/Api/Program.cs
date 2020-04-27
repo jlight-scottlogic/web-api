@@ -31,7 +31,9 @@ namespace Api
             Host.CreateDefaultBuilder(args)
               .ConfigureWebHostDefaults(webBuilder =>
               {
-                  webBuilder.UseStartup<Startup>();
+                  webBuilder
+                      .ConfigureKestrel(_ => { })
+                      .UseStartup<Startup>();
               })
               .ConfigureLogging(logging =>
               {
