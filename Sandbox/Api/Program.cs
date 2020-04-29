@@ -33,6 +33,7 @@ namespace Api
               {
                   webBuilder
                       .ConfigureKestrel(_ => { })
+                      .UseIISIntegration()
                       .UseStartup<Startup>();
               })
               .ConfigureLogging(logging =>

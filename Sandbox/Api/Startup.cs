@@ -35,6 +35,7 @@ namespace Api
             ConfigureAuthentication(services);
             ConfigureEntityFramework(services);
             ConfigureSwagger(services);
+            ConfigureCors(services);
 
             services.AddScoped<IUserAuthenticationService, UserAuthenticationService>();
         }
@@ -45,19 +46,20 @@ namespace Api
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-
-                // Enable middleware to serve generated Swagger as a JSON endpoint.
-                app.UseSwagger();
-
-                // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
-                // specifying the Swagger JSON endpoint.
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sandbox Api V1");
-                    c.RoutePrefix = string.Empty;
-                });
             }
 
+            // Enable middleware to serve generated Swagger as a JSON endpoint.
+            app.UseSwagger();
+
+            // Enable middleware to serve swagger-ui (HTML, JS, CSS, etc.),
+            // specifying the Swagger JSON endpoint.
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Sandbox Api V1");
+                c.RoutePrefix = string.Empty;
+            });
+
+            app.UseCors();
             app.UseRouting();
 
             app.UseAuthentication();
@@ -130,6 +132,18 @@ namespace Api
                             new string[] {}
                     }
                 });
+            });
+        }
+
+        private static void ConfigureCors(IServiceCollection services)
+        {
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(
+                    builder =>
+                    {
+                        builder.WithOrigins("http://localhost:4200");
+                    });
             });
         }
     }
