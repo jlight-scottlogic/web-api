@@ -14,6 +14,7 @@ using System.IO;
 using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.Net.Http.Headers;
 
 namespace Api
 {
@@ -142,7 +143,8 @@ namespace Api
                 options.AddDefaultPolicy(
                     builder =>
                     {
-                        builder.WithOrigins("http://localhost:4200");
+                        builder.WithOrigins("http://localhost:4200")
+                               .WithHeaders(HeaderNames.Authorization);
                     });
             });
         }
