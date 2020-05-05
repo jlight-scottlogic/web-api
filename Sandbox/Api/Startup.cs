@@ -15,8 +15,8 @@ using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Net.Http.Headers;
-using Api.Repositories;
-using Api.QueryProvider;
+using Api.Data.Repositories;
+using Api.Data.QueryProvider;
 
 namespace Api
 {

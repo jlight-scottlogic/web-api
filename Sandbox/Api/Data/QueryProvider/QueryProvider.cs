@@ -1,8 +1,7 @@
-﻿using Api.Data;
-using Api.Models;
+﻿using Api.Models;
 using System.Linq;
 
-namespace Api.QueryProvider
+namespace Api.Data.QueryProvider
 {
     public class QueryProvider<T> : IQueryProvider<T> where T : Entity
     {

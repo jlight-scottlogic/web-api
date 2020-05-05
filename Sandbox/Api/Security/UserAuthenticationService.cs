@@ -1,5 +1,5 @@
-﻿using Api.Models;
-using Api.QueryProvider;
+﻿using Api.Data.QueryProvider;
+using Api.Models;
 using Api.Security.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;

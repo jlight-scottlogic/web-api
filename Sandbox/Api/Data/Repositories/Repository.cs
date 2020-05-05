@@ -1,11 +1,10 @@
-﻿using Api.Data;
-using Api.Models;
+﻿using Api.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace Api.Repositories
+namespace Api.Data.Repositories
 {
     public class Repository<T> : IRepository<T> where T : Entity
     {

@@ -1,7 +1,7 @@
 ﻿using Api.Models;
 using System.Linq;
 
-namespace Api.QueryProvider
+namespace Api.Data.QueryProvider
 {
     public interface IQueryProvider<T> where T : Entity
     {
