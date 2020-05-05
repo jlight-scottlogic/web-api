@@ -15,6 +15,8 @@ using System;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Net.Http.Headers;
+using Api.Repositories;
+using Api.QueryProvider;
 
 namespace Api
 {
@@ -39,6 +41,9 @@ namespace Api
             ConfigureCors(services);
 
             services.AddScoped<IUserAuthenticationService, UserAuthenticationService>();
+            services.AddScoped(typeof(IQueryProvider<>), typeof(QueryProvider<>));
+            services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+            services.AddScoped<IProductRepository, ProductRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
