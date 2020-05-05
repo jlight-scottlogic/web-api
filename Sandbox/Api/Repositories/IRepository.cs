@@ -8,12 +8,14 @@ namespace Api.Repositories
     public interface IRepository<T>
         where T: Entity
     {
-        void Add(T product);
+        void Add(T entity);
 
-        Task<IEnumerable<T>> GetAll();
+        void Remove(T entity);
 
-        Task<T> GetById(Guid id);
+        Task<IEnumerable<T>> GetAllAsync();
 
-        Task SaveChanges();
+        Task<T> GetByIdAsync(Guid id);
+
+        Task SaveChangesAsync();
     }
 }

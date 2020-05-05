@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Api.Data;
 using Api.Models;
+using Api.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Api.Controllers
 {
@@ -15,13 +14,12 @@ namespace Api.Controllers
     [Route("users")]
     public class UsersController : ControllerBase
     {
-        private readonly SandboxContext context;
+        private readonly IRepository<User> repo;
 
-        public UsersController(SandboxContext context)
+        public UsersController(IRepository<User> repo)
         {
-            this.context = context;
+            this.repo = repo;
         }
-
 
         /// <summary>
         /// Gets list of all existing users
@@ -32,9 +30,8 @@ namespace Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<IEnumerable<User>>> Get()
         {
-            return await context.Users.ToListAsync();
+            return Ok(await repo.GetAllAsync());
         }
-
 
         /// <summary>
         /// Gets current user details from HttpContext

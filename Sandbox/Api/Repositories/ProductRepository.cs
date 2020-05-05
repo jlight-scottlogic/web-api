@@ -9,15 +9,13 @@ namespace Api.Repositories
 {
     public class ProductRepository : Repository<Product>, IProductRepository
     {
-        private readonly SandboxContext context;
-
         public ProductRepository(SandboxContext context) : base(context)
         {
         }
 
         public async Task<IEnumerable<Product>> GetByName(string name)
         {
-            return await context.Products.Where(x => x.Name == name).ToListAsync();
+            return await Context.Products.Where(x => x.Name == name).ToListAsync();
         }
     }
 }

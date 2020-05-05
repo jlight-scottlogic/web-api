@@ -9,31 +9,36 @@ namespace Api.Repositories
 {
     public class Repository<T> : IRepository<T> where T : Entity
     {
-        private readonly SandboxContext context;
+        protected SandboxContext Context { get; }
 
         public Repository(SandboxContext context)
         {
-            this.context = context;
+            Context = context;
         }
 
-        public async Task<IEnumerable<T>> GetAll()
+        public async Task<IEnumerable<T>> GetAllAsync()
         {
-            return await context.Set<T>().ToListAsync();
+            return await Context.Set<T>().ToListAsync();
         }
 
-        public async Task<T> GetById(Guid id)
+        public async Task<T> GetByIdAsync(Guid id)
         {
-            return await context.Set<T>().FindAsync(id);
+            return await Context.Set<T>().FindAsync(id);
         }
 
-        public void Add(T T)
+        public void Add(T entity)
         {
-            context.Set<T>().Add(T);
+            Context.Set<T>().Add(entity);
         }
 
-        public async Task SaveChanges()
+        public void Remove(T entity)
         {
-            await context.SaveChangesAsync();
+            Context.Set<T>().Remove(entity);
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await Context.SaveChangesAsync();
         }
     }
 }

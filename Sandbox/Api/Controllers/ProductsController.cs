@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Api.Data;
 using Api.Models;
+using Api.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +16,11 @@ namespace Api.Controllers
     [Route("products")]
     public class ProductsController : ControllerBase
     {
-        private readonly SandboxContext context;
+        private readonly IProductRepository repo;
 
-        public ProductsController(SandboxContext context)
+        public ProductsController(IProductRepository repo)
         {
-            this.context = context;
+            this.repo = repo;
         }
 
         /// <summary>
@@ -31,7 +32,7 @@ namespace Api.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<ActionResult<IEnumerable<Product>>> Get()
         {
-            return await context.Products.ToListAsync();
+            return Ok(await repo.GetAllAsync());
         }
 
         /// <summary>
@@ -45,7 +46,7 @@ namespace Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<Product>> Get(Guid id)
         {
-            var product = await context.Products.FindAsync(id);
+            var product = await repo.GetByIdAsync(id);
 
             if (product == null)
             {
@@ -67,9 +68,9 @@ namespace Api.Controllers
         {
             var id = Guid.NewGuid();
             product.Id = id;
-            context.Products.Add(product);
+            repo.Add(product);
 
-            await context.SaveChangesAsync();
+            await repo.SaveChangesAsync();
 
             return id;
         }
@@ -86,7 +87,7 @@ namespace Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Put(Guid id, Product product)
         {
-            var existing = await context.Products.FindAsync(id);
+            var existing = await repo.GetByIdAsync(id);
 
             if (product == null)
             {
@@ -95,7 +96,7 @@ namespace Api.Controllers
 
             existing.Name = product.Name;
 
-            await context.SaveChangesAsync();
+            await repo.SaveChangesAsync();
 
             return Ok();
         }
@@ -111,16 +112,16 @@ namespace Api.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> Delete(Guid id)
         {
-            var product = await context.Products.FindAsync(id);
+            var product = await repo.GetByIdAsync(id);
 
             if (product == null)
             {
                 return NotFound();
             }
 
-            context.Products.Remove(product);
+            repo.Remove(product);
 
-            await context.SaveChangesAsync();
+            await repo.SaveChangesAsync();
 
             return Ok();
         }
