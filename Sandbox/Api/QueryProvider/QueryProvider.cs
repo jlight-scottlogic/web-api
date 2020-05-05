@@ -11,6 +11,7 @@ namespace Api.QueryProvider
         public QueryProvider(SandboxContext context)
         {
             this.context = context;
+            context.Database.EnsureCreated(); // Ignore this. It is needed for the In-Memory DbContext.
         }
 
         public IQueryable<T> Queryable => context.Set<T>();

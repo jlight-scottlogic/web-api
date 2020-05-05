@@ -1,5 +1,5 @@
-﻿using Api.Data;
-using Api.Models;
+﻿using Api.Models;
+using Api.QueryProvider;
 using Api.Security.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using System.Threading.Tasks;
@@ -8,17 +8,16 @@ namespace Api.Security
 {
     public class UserAuthenticationService : IUserAuthenticationService
     {
-        private readonly SandboxContext context;
+        private readonly IQueryProvider<User> provider;
 
-        public UserAuthenticationService(SandboxContext context)
+        public UserAuthenticationService(IQueryProvider<User> provider)
         {
-            this.context = context;
-            context.Database.EnsureCreated();
+            this.provider = provider;
         }
 
         public async Task<User> Authenticate(string username, string password)
         {
-            return await context.Users.SingleOrDefaultAsync(x => x.Username == username && x.Password == password);
+            return await provider.Queryable.SingleOrDefaultAsync(x => x.Username == username && x.Password == password);
         }
     }
 }
