@@ -1,4 +1,4 @@
-﻿using Api.Models;
+﻿using Api.Data.Entities;
 using System.Linq;
 
 namespace Api.Data.QueryProvider

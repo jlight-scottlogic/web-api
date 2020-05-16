@@ -1,4 +1,4 @@
-﻿using Api.Models;
+﻿using Api.Data.Entities;
 
 namespace Api.Data.Repositories
 {

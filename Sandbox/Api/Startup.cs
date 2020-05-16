@@ -149,7 +149,7 @@ namespace Api
                     builder =>
                     {
                         builder.WithOrigins("http://localhost:4200")
-                               .WithHeaders(HeaderNames.Authorization);
+                               .WithHeaders(HeaderNames.Authorization, HeaderNames.ContentType);
                     });
             });
         }

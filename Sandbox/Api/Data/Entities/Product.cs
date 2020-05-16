@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Api.Models
+namespace Api.Data.Entities
 {
     public class Product : Entity
     {

@@ -1,8 +1,6 @@
-﻿using System;
-
-namespace Api.Models
+﻿namespace Api.Data.Entities
 {
-    public class User: Entity
+    public class User : Entity
     {
         public string Username { get; set; }
 

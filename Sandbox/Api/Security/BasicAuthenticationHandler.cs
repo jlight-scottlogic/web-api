@@ -1,4 +1,4 @@
-﻿using Api.Models;
+﻿using Api.Data.Entities;
 using Api.Security.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;

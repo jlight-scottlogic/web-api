@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Api.Data;
+using Api.Data.Entities;
 using Api.Data.Repositories;
 using Api.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Api.Controllers
 {
@@ -28,11 +28,21 @@ namespace Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<Product>))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<ProductDetailsModel>))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<IEnumerable<Product>>> Get()
+        public async Task<ActionResult<IEnumerable<ProductDetailsModel>>> Get()
         {
-            return Ok(await repo.GetAllAsync());
+            var products = (await repo.GetAllAsync())
+                .Select(x => new ProductDetailsModel
+                {
+                    Id = x.Id,
+                    Name = x.Name,
+                    Description = x.Description,
+                    DateAdded = x.DateAdded,
+                    IsActive = x.IsActive
+                });
+
+            return Ok(products);
         }
 
         /// <summary>
@@ -41,10 +51,10 @@ namespace Api.Controllers
         /// <param name="id">The id of the product</param>
         /// <returns>The product</returns>
         [HttpGet("{id}")]
-        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Product))]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(ProductDetailsModel))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Product>> Get(Guid id)
+        public async Task<ActionResult<ProductDetailsModel>> Get(Guid id)
         {
             var product = await repo.GetByIdAsync(id);
 
@@ -53,7 +63,14 @@ namespace Api.Controllers
                 return NotFound();
             }
 
-            return product;
+            return new ProductDetailsModel
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                DateAdded = product.DateAdded,
+                IsActive = product.IsActive
+            };
         }
 
         /// <summary>
@@ -64,11 +81,18 @@ namespace Api.Controllers
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Guid))]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<ActionResult<Guid>> Post(Product product)
+        public async Task<ActionResult<Guid>> Post(ProductCreateModel product)
         {
             var id = Guid.NewGuid();
-            product.Id = id;
-            repo.Add(product);
+
+            repo.Add(new Product
+            {
+                Id = id,
+                Name = product.Name,
+                Description = product.Description,
+                DateAdded = product.DateAdded,
+                IsActive = true
+            });
 
             await repo.SaveChangesAsync();
 
@@ -85,7 +109,7 @@ namespace Api.Controllers
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Put(Guid id, Product product)
+        public async Task<IActionResult> Put(Guid id, ProductEditModel product)
         {
             var existing = await repo.GetByIdAsync(id);
 
@@ -95,6 +119,9 @@ namespace Api.Controllers
             }
 
             existing.Name = product.Name;
+            existing.Description = product.Description;
+            existing.DateAdded = product.DateAdded;
+            existing.IsActive = product.IsActive;
 
             await repo.SaveChangesAsync();
 
